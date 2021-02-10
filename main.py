@@ -128,11 +128,11 @@ def score(player1,player2):
 
 def read_pos(str):
     str = str.split(",")
-    return int(str[0]), int(str[1]), int(str[2])
+    return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7]), int(str[8]), int(str[9]), int(str[10]),int(str[11]), int(str[12]), int(str[13]), int(str[14]), int(str[15])
 
 
 def make_pos(tup):
-    return str(tup[0]) + "," + str(tup[1])+ ","+str(tup[2])
+    return str(tup[0]) + "," + str(tup[1])+ ","+str(tup[2])+","+str(tup[3])+","+str(tup[4])+","+str(tup[5])+","+str(tup[6])+","+str(tup[7])+","+str(tup[8])+","+str(tup[9])+","+str(tup[10])+","+str(tup[11])+","+str(tup[12])+","+str(tup[13])+","+str(tup[14])+","+str(tup[15])
 
 
 def gameloop():
@@ -158,11 +158,11 @@ def gameloop():
     snake_length2 = 7
     Apple_thickness = 10
 
-    rand_Apple_x=round(random.randrange(0+50,display_width-Apple_thickness-10)/10.0)*10.0
-    rand_Apple_y=round(random.randrange(0+75,display_height-Apple_thickness-20)/10.0)*10.0
+    rand_Apple_x=int(round(random.randrange(0+50,display_width-Apple_thickness-10)/10.0)*10.0)
+    rand_Apple_y=int(round(random.randrange(0+75,display_height-Apple_thickness-20)/10.0)*10.0)
 
-    rand_Fruit_x=round(random.randrange(0+50,display_width-Apple_thickness-10)/10.0)*10.0
-    rand_Fruit_y=round(random.randrange(0+75,display_height-Apple_thickness-10)/10.0)*10.0
+    rand_Fruit_x=int(round(random.randrange(0+50,display_width-Apple_thickness-10)/10.0)*10.0)
+    rand_Fruit_y=int(round(random.randrange(0+75,display_height-Apple_thickness-10)/10.0)*10.0)
 
     #run = True
     n = Network()
@@ -195,7 +195,14 @@ def gameloop():
 
     while(gameexit):
 
+        #print("gamechange ", gamechange)
+        #print(startPos[3])
+        #if(startPos[3]==2 and gamechange==1):
+        #    gamechange+=1
+
         while(gameover==True):
+
+
             if(gamechange==1):
                 gamechange+=1
                 gameexit = True
@@ -207,21 +214,37 @@ def gameloop():
                 snake_length2 = 7
                 Apple_thickness = 10
 
-                rand_Apple_x = round(random.randrange(0+60, display_width -30 - Apple_thickness) / 10.0) * 10.0
-                rand_Apple_y = round(random.randrange(0+60, display_height -30 - Apple_thickness) / 10.0) * 10.0
+                rand_Apple_x = int(round(random.randrange(0+60, display_width -30 - Apple_thickness) / 10.0) * 10.0)
+                rand_Apple_y = int(round(random.randrange(0+60, display_height -30 - Apple_thickness) / 10.0) * 10.0)
 
+                if (startPos[2] == 0):
+                    lead_x_1 = 200
+                    lead_y_1 = 200
+                    lead_x_change_1 = 0
+                    lead_y_change_1 = 0
+                    lead_x_2 = startPos[0]
+                    lead_y_2 = startPos[1]
+                    lead_x_change_2 = 0
+                    lead_y_change_2 = 0
 
-                lead_x_1 = 600
-                lead_y_1 = 400
-                lead_x_change_1 = 0
-                lead_y_change_1 = 0
-                lead_x_2 = 200
-                lead_y_2 = 200
-                lead_x_change_2 = 0
-                lead_y_change_2 = 0
+                else:
+                    lead_x_1 = startPos[0]
+                    lead_y_1 = startPos[1]
+                    lead_x_change_1 = 0
+                    lead_y_change_1 = 0
+                    lead_x_2 = 200
+                    lead_y_2 = 200
+                    lead_x_change_2 = 0
+                    lead_y_change_2 = 0
+
 
             else:
+                gamechange+=1
                 gameDisplay.fill(black)
+                p2Pos = read_pos(n.send(make_pos((lead_x_1, lead_y_1, 1, 3, rand_Apple_x, rand_Apple_y, apple_change,
+                                                  snake_length2, player_score_2, player_score_1, fruit_change,
+                                                  rand_Fruit_x, rand_Fruit_y, fruit_present, fruit_eaten,
+                                                  fruit_number))))
                 if(player_score_1>player_score_2):
                     message_to_screen("PLAYER 1 WINS", red, -60, 40)
                 if (player_score_1 < player_score_2):
@@ -231,29 +254,88 @@ def gameloop():
 
 
                 message_to_screen("GAMEOVER",red,-10,50)
-                message_to_screen("Q to quit , R to restart",blue,30,10)
+                #message_to_screen("Q to quit , R to restart",blue,30,10)
                 pygame.display.update()
 
                 for event in pygame.event.get():
                     if(event.type==pygame.KEYDOWN):
-                        if(event.key==pygame.K_q):
-                            gameover=False
-                            gameexit=False
-                        if(event.key==pygame.K_r):
-                            gameloop()
+                        pass
 
-        if (startPos[0] == 0):
-            p2Pos = read_pos(n.send(make_pos((lead_x_1, lead_y_1, 1))))
-            lead_x_2 = p2Pos[0]
-            lead_y_2 = p2Pos[1]
-            #p2.update()
-            #p.move()
+        if (startPos[2] == 0):
+            if gamechange==1:
+                p2Pos = read_pos(n.send(make_pos((lead_x_1, lead_y_1, 1, 1, rand_Apple_x,  rand_Apple_y, apple_change, snake_length1, player_score_2, player_score_1, fruit_change, rand_Fruit_x, rand_Fruit_y, fruit_present, fruit_eaten, fruit_number))))
+                lead_x_2 = p2Pos[0]
+                lead_y_2 = p2Pos[1]
+                player_score_2=p2Pos[8]
+                #rand_Apple_x = p2Pos[4]
+                #rand_Apple_y = p2Pos[5]
+                #apple_change = p2Pos[6]rrrrr
+                if(p2Pos[3]==2):
+                    gameover=True
+                #print(p2Pos[3])
+            else:
+                p2Pos = read_pos(n.send(make_pos((lead_x_2, lead_y_2, 0, 2 , rand_Apple_x,  rand_Apple_y, apple_change, snake_length2, player_score_2,player_score_1, fruit_change, rand_Fruit_x, rand_Fruit_y,fruit_present,fruit_eaten, fruit_number))))
+                lead_x_1 = p2Pos[0]
+                lead_y_1 = p2Pos[1]
+                player_score_1=p2Pos[9]
+                fruit_eaten = p2Pos[14]
+                fruit_number = p2Pos[15]
+                if (p2Pos[3] == 3):
+                    gameover = True
+
+                #print(p2Pos[3])
+
+                #p2.update()
+                #p.move()
+            #else:
+            #    p2Pos = read_pos(n.send(make_pos((lead_x_1, lead_y_1, 0))))
+            #    lead_x_2 = p2Pos[0]
+            #    lead_y_2 = p2Pos[1]
+
         else:
-            p2Pos = read_pos(n.send(make_pos((lead_x_2, lead_y_2, 0))))
-            lead_x_1 = p2Pos[0]
-            lead_y_1 = p2Pos[1]
+            if gamechange==1:
+                p2Pos = read_pos(n.send(make_pos((lead_x_2, lead_y_2, 0 , 1 ,rand_Apple_x,  rand_Apple_y, apple_change, snake_length2, player_score_2, player_score_1, fruit_change, rand_Fruit_x, rand_Fruit_y, fruit_present,fruit_eaten, fruit_number))))
+                lead_x_1 = p2Pos[0]
+                lead_y_1 = p2Pos[1]
+                rand_Apple_x = p2Pos[4]
+                rand_Apple_y = p2Pos[5]
+                apple_change=p2Pos[6]
+                snake_length1=p2Pos[7]
+                player_score_1=p2Pos[9]
+                fruit_change=p2Pos[10]
+                rand_Fruit_x=p2Pos[11]
+                rand_Fruit_y = p2Pos[12]
+                fruit_present=p2Pos[13]
+                fruit_eaten = p2Pos[14]
+                fruit_number = p2Pos[15]
+
+
+                if (p2Pos[3] == 2):
+                    gameover = True
+                #print(p2Pos[3])
             #p.update()
             #p2.move()
+            else:
+                p2Pos = read_pos(n.send(make_pos((lead_x_1, lead_y_1, 1, 2, rand_Apple_x,  rand_Apple_y, apple_change, snake_length2, player_score_2, player_score_1, fruit_change, rand_Fruit_x, rand_Fruit_y, fruit_present,fruit_eaten, fruit_number))))
+                lead_x_2 = p2Pos[0]
+                lead_y_2 = p2Pos[1]
+                rand_Apple_x = p2Pos[4]
+                rand_Apple_y = p2Pos[5]
+                apple_change = p2Pos[6]
+                snake_length2 = p2Pos[7]
+                player_score_2= p2Pos[8]
+                fruit_change = p2Pos[10]
+                rand_Fruit_x = p2Pos[11]
+                rand_Fruit_y = p2Pos[12]
+                fruit_present = p2Pos[13]
+                if (p2Pos[3] == 3):
+                    gameover = True
+
+                #print(p2Pos[3])
+
+
+
+
 
 
         for event in pygame.event.get():
@@ -454,8 +536,8 @@ def gameloop():
                 if (fruit_change == 70):
                     fruit_present = 0
                     fruit_change=0
-                    rand_Fruit_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-                    rand_Fruit_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0
+                    rand_Fruit_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+                    rand_Fruit_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0)
 
 
 
@@ -483,8 +565,8 @@ def gameloop():
 
         if(apple_change==200):
             apple_change=0
-            rand_Apple_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-            rand_Apple_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0
+            rand_Apple_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+            rand_Apple_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0)
 
 
         if(fruit_eaten==1):
@@ -502,20 +584,24 @@ def gameloop():
                 fruit_present=0
                 fruit_change=0
 
-                rand_Fruit_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-                rand_Fruit_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0
+                rand_Fruit_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+                rand_Fruit_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0)
                 fruit_number=random.randrange(1,3)
 
             if (snakelist2[-1][0] == rand_Fruit_x and snakelist2[-1][1] == rand_Fruit_y):
                 fruit_present=0
                 fruit_change=0
 
-                rand_Fruit_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-                rand_Fruit_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0
+                rand_Fruit_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+                rand_Fruit_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 10) / 10.0) * 10.0)
 
         for each_segment in snakelist1[:-1]:
             if(each_segment==snakehead1 and len(snakelist1)>7):
-                gameover = True
+                if(startPos[2]==0 and gamechange==1):
+                    gameover = True
+                elif(startPos[2]==1 and gamechange==2 ):
+                    gameover = True
+
 
         for each_segment in snakelist2[:-1]:
             if(each_segment==snakehead2 and len(snakelist2)>7):
@@ -542,9 +628,10 @@ def gameloop():
         draw_snake2(block_size, snakelist2)
 
         if (lead_x_1== rand_Apple_x and lead_y_1== rand_Apple_y):
-            rand_Apple_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-            rand_Apple_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0
+            rand_Apple_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+            rand_Apple_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0)
             snake_length1 += 1
+            #print("gg")
             apple_change=0
 
             if(gamechange==1):
@@ -559,8 +646,8 @@ def gameloop():
                     player_score_2+=10
 
         if (lead_x_2== rand_Apple_x and lead_y_2== rand_Apple_y):
-            rand_Apple_x = round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0
-            rand_Apple_y = round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0
+            rand_Apple_x = int(round(random.randrange(0 + 50, display_width - Apple_thickness - 10) / 10.0) * 10.0)
+            rand_Apple_y = int(round(random.randrange(0 + 75, display_height - Apple_thickness - 20) / 10.0) * 10.0)
             snake_length2 += 1
             apple_change=0
 
